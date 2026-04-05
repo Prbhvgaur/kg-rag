@@ -1,0 +1,27 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+.vercel
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.venv/
+.venv313/
+
+# Node / frontend
+node_modules/
+dist/
+.vite/
+
+# Editors / OS
+.idea/
+.vscode/
+Thumbs.db

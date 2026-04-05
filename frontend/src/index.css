@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply min-h-screen bg-sand-50 text-sand-900 antialiased;
+  background-image:
+    radial-gradient(circle at top left, rgba(15, 118, 110, 0.1), transparent 28rem),
+    linear-gradient(180deg, rgba(249, 248, 245, 0.95), rgba(240, 237, 228, 0.92));
+}
+
+#root {
+  @apply min-h-screen;
+}
+
+.prose pre {
+  @apply overflow-x-auto rounded-xl bg-sand-900 p-4 text-sand-50;
+}
+
+.prose code {
+  @apply rounded bg-sand-200 px-1 py-0.5 text-sm text-sand-900;
+}
