@@ -2,27 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    @apply bg-[#0A0F1E] text-[#F8FAFC];
-  }
+:root {
+  color-scheme: light;
 }
 
-@layer utilities {
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+body {
+  @apply min-h-screen bg-sand-50 text-sand-900 antialiased;
+  background-image:
+    radial-gradient(circle at top left, rgba(15, 118, 110, 0.1), transparent 28rem),
+    linear-gradient(180deg, rgba(249, 248, 245, 0.95), rgba(240, 237, 228, 0.92));
 }
 
-@keyframes pulse-gold {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+#root {
+  @apply min-h-screen;
 }
 
-.animate-pulse-gold {
-  animation: pulse-gold 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.prose pre {
+  @apply overflow-x-auto rounded-xl bg-sand-900 p-4 text-sand-50;
+}
+
+.prose code {
+  @apply rounded bg-sand-200 px-1 py-0.5 text-sm text-sand-900;
 }

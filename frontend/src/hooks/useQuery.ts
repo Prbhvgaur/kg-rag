@@ -1,23 +1,35 @@
-import { useState } from 'react'
-import { QueryResult } from '../types'
-import { api } from '../lib/api'
+import { useMutation } from "@tanstack/react-query";
+import { v4 as uuidv4 } from "uuid";
 
-export const useQuery = () => {
-  const [result, setResult] = useState<QueryResult | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+import { sendQuery } from "../api/query";
+import { useAppStore } from "../store/useAppStore";
+import { ChatMessage } from "../types";
 
-  const ask = async (question: string) => {
-    setLoading(true)
-    setError(null)
-    const response = await api.query.ask(question)
-    if (response.success && response.data) {
-      setResult(response.data)
-    } else {
-      setError(response.error || 'Failed to get answer')
+export function useQueryMutation() {
+  const addMessage = useAppStore((state) => state.addMessage);
+
+  return useMutation({
+    mutationFn: ({ question }: { question: string }) => sendQuery(question),
+    onMutate: ({ question }) => {
+      const userMessage: ChatMessage = {
+        id: uuidv4(),
+        role: "user",
+        content: question,
+        timestamp: new Date().toISOString()
+      };
+      addMessage(userMessage);
+    },
+    onSuccess: (data) => {
+      const assistantMessage: ChatMessage = {
+        id: uuidv4(),
+        role: "assistant",
+        content: data.answer,
+        sources: data.sources,
+        entities: data.entities_matched,
+        graphFacts: data.graph_facts_used,
+        timestamp: new Date().toISOString()
+      };
+      addMessage(assistantMessage);
     }
-    setLoading(false)
-  }
-
-  return { ask, result, loading, error }
+  });
 }

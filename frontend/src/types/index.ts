@@ -1,72 +1,55 @@
-export interface User {
-  id: string
-  email: string
-  created_at: string
+export interface IngestEvent {
+  stage: "extracting" | "chunking" | "processing" | "done" | "error";
+  progress: number;
+  message: string;
+  doc_id?: string;
+  filename?: string;
+  chunks?: number;
 }
 
-export interface KGDocument {
-  id: string
-  name: string
-  size_bytes: number
-  chunk_count: number
-  entity_count: number
-  status: 'ingesting' | 'ready' | 'error'
-  created_at: string
-  user_id: string
+export interface Source {
+  filename: string;
+  text: string;
+  score: number;
 }
 
-export interface IngestionJob {
-  job_id: string
-  status: 'running' | 'complete' | 'error'
-  steps: {
-    pdf_extraction: StepStatus
-    chunking: StepStatus
-    ner_embedding: StepStatus
-    graph_storage: StepStatus
-    vector_indexing: StepStatus
-  }
-  result?: {
-    chunk_count: number
-    entity_count: number
-    document_id: string
-  }
-  error?: string
+export interface QueryResponse {
+  answer: string;
+  sources: Source[];
+  entities_matched: string[];
+  graph_facts_used: number;
 }
 
-export type StepStatus = 'pending' | 'in_progress' | 'complete' | 'error'
-
-export interface QueryResult {
-  answer: string
-  sources: SourceChunk[]
-  graph_path?: GraphEdge[]
-  latency_ms: number
-  query_id: string
-}
-
-export interface SourceChunk {
-  text: string
-  score: number
-  document_name: string
-  chunk_index: number
-}
-
-export interface GraphEdge {
-  from: string
-  to: string
-  relation: string
+export interface ChatMessage {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  sources?: Source[];
+  entities?: string[];
+  graphFacts?: number;
+  timestamp: string;
 }
 
 export interface GraphNode {
-  id: string
-  label: string
-  type: 'PERSON' | 'ORG' | 'CONCEPT' | 'LOCATION' | 'EVENT'
-  properties: Record<string, string>
+  id: string;
+  label: string;
+  name: string;
 }
 
-export interface ApiResponse<T> {
-  success: boolean
-  data?: T
-  error?: string
-  code?: string
-  request_id?: string
+export interface GraphLink {
+  source: string;
+  target: string;
+  relation: string;
+}
+
+export interface GraphData {
+  nodes: GraphNode[];
+  links: GraphLink[];
+}
+
+export interface Document {
+  doc_id: string;
+  filename: string;
+  chunks: number;
+  ingestedAt: string;
 }
