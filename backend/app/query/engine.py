@@ -29,17 +29,18 @@ class QueryEngine:
         question: str,
         max_hops: int = 2,
         top_k: int = 5,
+        user_id: str | None = None,
     ) -> dict:
         q_embedding = await embed_text(question, task_type="RETRIEVAL_QUERY")
 
         seed_chunks, entities = await asyncio.gather(
-            self.vector.similarity_search(q_embedding, top_k=top_k),
-            self.graph.find_entities_in_question(question),
+            self.vector.similarity_search(q_embedding, top_k=top_k, user_id=user_id),
+            self.graph.find_entities_in_question(question, user_id=user_id),
         )
 
         graph_facts: list[dict] = []
         traversal_tasks = [
-            self.graph.traverse(entity["text"], max_hops=max_hops)
+            self.graph.traverse(entity["text"], max_hops=max_hops, user_id=user_id)
             for entity in entities[:5]
         ]
         if traversal_tasks:
@@ -69,13 +70,19 @@ class QueryEngine:
             "sources": [
                 {
                     "filename": chunk["filename"],
+                    "document_name": chunk["filename"],
                     "text": chunk["text"][:200],
                     "score": chunk["score"],
+                    "chunk_index": _chunk_index(chunk["id"]),
                 }
                 for chunk in seed_chunks
             ],
             "entities_matched": [entity["text"] for entity in entities],
             "graph_facts_used": len(unique_facts),
+            "graph_path": [
+                {"from": fact["subject"], "to": fact["object"], "relation": fact["predicate"]}
+                for fact in unique_facts[:8]
+            ],
         }
 
 
@@ -87,3 +94,10 @@ def _build_context(chunks: list[dict], facts: list[dict]) -> str:
         else "No graph facts found."
     )
     return f"Document excerpts:\n{chunk_text}\n\nKnowledge graph facts:\n{fact_text}"
+
+
+def _chunk_index(chunk_id: str) -> int:
+    try:
+        return int(chunk_id.rsplit("_chunk_", 1)[1])
+    except (IndexError, ValueError):
+        return 0

@@ -28,13 +28,18 @@ class GraphBuilder:
         entities: list[dict],
         relations: list[dict],
         filename: str,
+        user_id: str = "legacy",
     ) -> None:
         async with self._driver.session() as session:
             await session.run(
-                "MERGE (c:Chunk {id: $id}) SET c.doc_id = $doc_id, c.filename = $filename",
+                """MERGE (c:Chunk {id: $id})
+                   SET c.doc_id = $doc_id,
+                       c.filename = $filename,
+                       c.user_id = $user_id""",
                 id=chunk_id,
                 doc_id=doc_id,
                 filename=filename,
+                user_id=user_id,
             )
 
             for entity in entities:
@@ -43,11 +48,12 @@ class GraphBuilder:
                        ON CREATE SET e.label = $label
                        ON MATCH SET e.label = coalesce(e.label, $label)
                        WITH e
-                       MATCH (c:Chunk {id: $chunk_id})
+                       MATCH (c:Chunk {id: $chunk_id, user_id: $user_id})
                        MERGE (e)-[:MENTIONED_IN]->(c)""",
                     text=entity["text"].strip(),
                     label=entity["label"],
                     chunk_id=chunk_id,
+                    user_id=user_id,
                 )
 
             for relation in relations:
@@ -58,11 +64,13 @@ class GraphBuilder:
                 MERGE (s:Entity {{text: $subj}})
                 MERGE (o:Entity {{text: $obj}})
                 MERGE (s)-[r:{predicate}]->(o)
-                SET r.doc_id = $doc_id
+                SET r.doc_id = $doc_id,
+                    r.user_id = $user_id
                 """
                 await session.run(
                     cypher,
                     subj=relation["subject"].strip(),
                     obj=relation["object"].strip(),
                     doc_id=doc_id,
+                    user_id=user_id,
                 )

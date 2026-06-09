@@ -2,15 +2,59 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="KG-RAG is a Knowledge Graph RAG application for document ingestion, graph extraction, and grounded question answering."
-    />
-    <title>KG-RAG</title>
+    <title>KG-RAG | Knowledge Graph Powered RAG</title>
+    <meta name="description" content="State-of-the-art Knowledge Graph + Vector hybrid retrieval pipeline for grounded, citation-backed answers." />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="KG-RAG | Knowledge Graph Powered RAG" />
+    <meta property="og:description" content="Ask questions. Get grounded answers. Powered by a Knowledge Graph + Vector hybrid retrieval pipeline." />
+    <meta property="og:type" content="website" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        margin: 0;
+        background-color: #0A0F1E;
+        background-image: 
+          radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.05) 0px, transparent 50%),
+          radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%);
+        font-family: 'Inter', sans-serif;
+        color: #F8FAFC;
+        min-height: 100vh;
+      }
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(245, 158, 11, 0.2) transparent;
+      }
+      *::-webkit-scrollbar {
+        width: 6px;
+      }
+      *::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      *::-webkit-scrollbar-thumb {
+        background-color: rgba(245, 158, 11, 0.2);
+        border-radius: 20px;
+      }
+      /* Dot Grid Background */
+      .bg-grid {
+        background-size: 40px 40px;
+        background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+        mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black, transparent);
+      }
+    </style>
   </head>
-  <body class="bg-stone-50">
-    <div id="root"></div>
+  <body class="dark">
+    <div id="root" class="bg-grid min-h-screen"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

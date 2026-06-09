@@ -10,12 +10,14 @@ class Settings(BaseSettings):
     neo4j_password: str
     supabase_url: str | None = None
     supabase_key: str | None = None
+    supabase_jwt_secret: str | None = None
     supabase_db_url: str
     allowed_origins: str = "http://localhost:5173"
     max_file_size_mb: int = 20
     max_chunks_per_doc: int = 500
     gemini_rpm_limit: int = 14
     environment: str = "development"
+    debug: bool = False
 
     model_config = SettingsConfigDict(
         env_file=".env",
